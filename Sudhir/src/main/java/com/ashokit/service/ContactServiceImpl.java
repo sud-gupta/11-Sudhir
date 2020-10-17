@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ashokit.controller.ViewContactsController;
 import com.ashokit.entity.Contact;
 import com.ashokit.entity.ContactDtlsEntity;
 import com.ashokit.repository.ContactDtlsRepository;
@@ -15,28 +18,24 @@ import com.ashokit.repository.ContactDtlsRepository;
 
 @Service
 public class ContactServiceImpl implements ContactService {
+	private static final Logger logger = LoggerFactory.getLogger(ContactServiceImpl.class);
 	
 	@Autowired
 	private ContactDtlsRepository contactDtlsRepository;
 	
 	@Override
 	public boolean saveContact(Contact contact) {
-		// TODO Auto-generated method stub
+		logger.debug("saveContact() started");
 		ContactDtlsEntity conEntity=new ContactDtlsEntity();
-		
-//		conEntity.setContactId(contact.getContactId());
-//		conEntity.setContactName(contact.getContactName());
-//		conEntity.setContactNum(contact.getContactNum());
-//		conEntity.setContactEmail(contact.getContactEmail());
-			
 		BeanUtils.copyProperties(contact, conEntity);
 	    ContactDtlsEntity conDtl=contactDtlsRepository.save(conEntity);
-	    
+	    logger.debug("saveContact() ended");
 		return conDtl.getContactId() !=null;
 	}
 
 	@Override
 	public List<Contact> getAllContacts() {
+		logger.debug("saveContact() started");
 		List<Contact> cont=new ArrayList<Contact>();
 		
 		List<ContactDtlsEntity> contactDtlsEntity=contactDtlsRepository.findAll();
@@ -45,6 +44,7 @@ public class ContactServiceImpl implements ContactService {
 			BeanUtils.copyProperties(entity, c);
 			cont.add(c);
 		});
+		logger.debug("saveContact() ended");
 		return cont;
 	}
 
@@ -57,25 +57,27 @@ public class ContactServiceImpl implements ContactService {
 //			BeanUtils.copyProperties(contactDtlsEntity, contact);
 //			return contact;
 //		}
+		logger.debug("getContactById() started");
 		Optional<ContactDtlsEntity> optional= contactDtlsRepository.findById(cid);
 		if(optional.isPresent()) {
 			Contact contact=new Contact();
 			BeanUtils.copyProperties(optional.get(), contact);
 			return contact;
 		}
+		logger.debug("getContactById() ended");
 		return null;
 	}
 
 	@Override
 	public boolean updateContact(Contact contact) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean deleteContactById(Integer cid) {
-		// TODO Auto-generated method stub
+		logger.debug("deleteContactById() started");
 		contactDtlsRepository.deleteById(cid);
+		logger.debug("deleteContactById() ended");
 		return true;
 	}
 

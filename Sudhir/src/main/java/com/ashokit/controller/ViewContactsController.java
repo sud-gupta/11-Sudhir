@@ -1,5 +1,7 @@
 package com.ashokit.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,26 +14,26 @@ import com.ashokit.service.ContactService;
 
 @Controller
 public class ViewContactsController {
-	
+	private static final Logger logger = LoggerFactory.getLogger(ViewContactsController.class);
+
 	@Autowired
 	private ContactService contactService;
-	
-	public String handleAddCtctHyperLink(Model model){ 
-		String status=null;
-   	 return status;
-	}
 
 	@GetMapping("/editContact")
-	public String editContact(@RequestParam("cid")Integer contactId, Model model) { 
-		Contact contact=contactService.getContactById(contactId);
+	public String editContact(@RequestParam("cid") Integer contactId, Model model) {
+		logger.debug("editContact() started");
+		Contact contact = contactService.getContactById(contactId);
 		model.addAttribute("contact", contact);
+		logger.debug("editContact() ended");
 		return "index";
 	}
-	
+
 	@GetMapping("/deleteContact")
-	public String deleteContact(@RequestParam("cid")Integer contactId,RedirectAttributes attr){
+	public String deleteContact(@RequestParam("cid") Integer contactId, RedirectAttributes attr) {
+		logger.debug("deleteContact() started");
 		contactService.deleteContactById(contactId);
-		 attr.addFlashAttribute("delMsg","contact deleted Successfully");
-   	 return "redirect:viewContacts";
+		attr.addFlashAttribute("delMsg", "contact deleted Successfully");
+		logger.debug("deleteContact() ended");
+		return "redirect:viewContacts";
 	}
 }
